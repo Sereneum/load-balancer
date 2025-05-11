@@ -1,0 +1,43 @@
+# Dockerfile.balancer
+
+# Dockerfile.balancer
+
+# --- Build Stage ---
+FROM golang:1.24-alpine AS builder
+
+WORKDIR /app
+
+# Копируем go.mod и go.sum для кэширования зависимостей
+COPY go.mod go.sum ./
+RUN go mod download
+
+# Копируем остальной исходный код
+COPY . .
+
+# Собираем приложение
+# CGO_ENABLED=0 для статической линковки, чтобы не зависеть от C-библиотек в alpine
+# -ldflags="-s -w" для уменьшения размера бинарника
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o /app/balancer ./cmd/balancer/main.go
+
+# --- Runtime Stage ---
+FROM alpine:latest
+
+WORKDIR /app
+
+# Копируем скомпилированный бинарник из стадии сборки
+COPY --from=builder /app/balancer /app/balancer
+
+# Копируем шаблон конфигурации и .env
+COPY configs/config.template.yaml /app/configs/config.template.yaml
+COPY .env /app/.env
+
+
+# Приложение будет слушать на порту, указанном в config.yaml (по умолчанию 8080)
+# EXPOSE документирует порт, но фактическое открытие порта делается в docker-compose
+EXPOSE 8080
+
+# Используем tini для правильной обработки сигналов и завершения
+#ENTRYPOINT ["/sbin/tini", "--"]
+
+# Команда для запуска приложения
+CMD ["/app/balancer"]

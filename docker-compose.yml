@@ -1,0 +1,38 @@
+# docker-compose.yml
+version: '3.8'
+
+services:
+  balancer:
+    build:
+      context: .
+      dockerfile: Dockerfile.balancer
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./configs/config.template.yaml:/app/configs/config.template.yaml:ro
+    environment:
+      - BACKEND_HOST=mockserver
+    networks:
+      - app-network
+    depends_on:
+      - mockserver
+    restart: unless-stopped
+
+
+  mockserver:
+    build:
+      context: .
+      dockerfile: Dockerfile.mockserver
+    volumes:
+      - ./configs/config.template.yaml:/app/configs/config.template.yaml:ro
+    environment:
+      - BACKEND_HOST=mockserver
+    ports:
+      - "9001-9006:9001-9006"
+    networks:
+      - app-network
+    restart: unless-stopped
+
+networks:
+  app-network:
+    driver: bridge

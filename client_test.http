@@ -1,0 +1,32 @@
+### Health check баланcера
+GET http://localhost:8080/health
+Accept: application/json
+
+###
+
+### Запрос на корень с пробросом IP через X-Forwarded-For
+GET http://localhost:8080/
+X-Forwarded-For: 192.168.1.100
+Accept: application/json
+
+###
+
+### Тест нагрузки — с другим IP
+GET http://localhost:8080/
+X-Forwarded-For: 10.0.0.45
+Accept: application/json
+
+###
+
+### Проверка на ограничение частоты (если реализован Rate Limiting)
+GET http://localhost:8080/
+X-Forwarded-For: 192.168.0.1
+Accept: application/json
+
+###
+
+### Симуляция неизвестного маршрута
+GET http://localhost:8080/unknown
+Accept: application/json
+
+###

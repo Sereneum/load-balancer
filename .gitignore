@@ -1,0 +1,69 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Output of the go coverage tool
+*.coverprofile
+*.cov
+*.coverage
+*.codecov
+
+# Go workspace and modules
+/go.sum
+/vendor/
+*.mod
+*.work
+
+# IDEs and editors
+.idea/
+*.iml
+*.swp
+*.swo
+*.sublime-workspace
+*.sublime-project
+*.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Dependency directories
+node_modules/
+
+# Docker-related
+docker-compose.override.yml
+.env
+.env.*
+.envrc
+.docker/
+.dockerignore
+
+# Cache & build
+dist/
+build/
+tmp/
+bin/
+coverage/
+*.tar
+*.tar.gz
+
+# Test outputs
+test-results/
+junit.xml
+coverage.xml
+
+# Local runtime
+*.pid
+*.pid.lock
+*.sock
+
+# Git metadata
+*.orig

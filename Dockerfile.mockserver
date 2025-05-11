@@ -1,0 +1,30 @@
+# Dockerfile.mockserver
+
+# --- Build Stage ---
+FROM golang:1.24-alpine AS builder
+
+WORKDIR /app
+
+COPY go.mod go.sum ./
+RUN go mod download
+
+COPY . .
+
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o /app/mockserver ./cmd/mockserver/main.go
+
+# --- Runtime Stage ---
+FROM alpine:latest
+
+WORKDIR /app
+
+COPY --from=builder /app/mockserver /app/mockserver
+
+# Копируем шаблон конфигурации и .env
+COPY configs/config.template.yaml /app/configs/config.template.yaml
+COPY .env /app/.env
+
+EXPOSE 9001-9006
+
+#ENTRYPOINT ["/sbin/tini", "--"]
+
+CMD ["/app/mockserver"]

@@ -1,0 +1,30 @@
+server:
+  port: "8080"
+  read_timeout: 5s
+  write_timeout: 10s
+
+health_check:
+  interval_seconds: 10s
+  timeout_seconds: 5s
+  path: "/health"
+
+strategy: "round-robin"
+
+backends:
+  - http://localhost:9001
+  - http://localhost:9002
+  - http://localhost:9003
+  - http://localhost:9004
+  - http://localhost:9005
+  - http://localhost:9006
+
+rate_limiter:
+  enabled: true
+  default_capacity: 20
+  default_rate_per_second: 2
+  client_overrides:
+    - client_id: "test-client"
+      capacity: 10
+      rate_per_second: 5
+
+
